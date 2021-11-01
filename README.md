@@ -2,6 +2,7 @@
 
 ## Description
 Budget Tracker is an application which allows offline access and functionality to it's users. The user can add expenses or deposits without a connection.
+
 ## Project URL
 
 ## Project Github Repository
@@ -16,6 +17,9 @@ SO THAT my account balance is accurate when I am traveling
   * [Description](#description)
   * [Installation](#installation)
   * [Author](#author)
+
+## Project Screenshot
+![Project-Screenshot](https://user-images.githubusercontent.com/57843842/139615762-924aada1-a116-4886-aaf9-5508a7aba3c5.jpg)
 
 ## Mock-Up
 ![19-pwa-homework-demo-01](https://user-images.githubusercontent.com/57843842/138796003-6fa25461-9708-4698-bfe1-0f4677d9fee9.png)

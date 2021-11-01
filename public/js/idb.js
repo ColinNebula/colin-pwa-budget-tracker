@@ -58,7 +58,7 @@ function checkDatabase() {
     };
 }
 
-// eslint-disable-next-line no-unused-vars
+// save record
 function saveRecord(record) {
     const db = request.result;
 
@@ -72,5 +72,5 @@ function saveRecord(record) {
     store.add(record);
 }
 
-// listen for app coming back online
+// listen 
 window.addEventListener("online", checkDatabase);

@@ -1,87 +1,76 @@
 let db;
-// establish a connection to IndexedDB database called 'user_hunt' and set it to version 1
+// establish a connection to IndexedDB database called 'budget_hunt' and set it to version 1
 const request = indexedDB.open('colin-pwa-budget-tracker', 1);
 
-request.onupgradeneeded = function (event) {
-    // save a reference to the database 
-    const db = event.target.result;
-    // create an object store (table) called `new_user`, set it to have an auto incrementing primary key of sorts 
-    db.createObjectStore('new_user', { autoIncrement: true });
-};
+request.onupgradeneeded = event => {
+    let db = event.target.result;
 
-// upon a successful 
-request.onsuccess = function (event) {
-    // when db is successfully created with its object store 
-    db = event.target.result;
+    console.log(event);
 
-    // check if app is online, i
-    if (navigator.onLine) {
-        
-        // uploadUser();
+    if (!db.objectStoreNames.contains(pendingObjectStoreName)) {
+        db.createObjectStore(pendingObjectStoreName, {
+            autoIncrement: true
+        });
     }
 };
 
-request.onerror = function (event) {
-    // log error here
-    console.log(event.target.errorCode);
+request.onsuccess = event => {
+    db = event.target.result;
+    console.log(db);
+    console.log(`Excellent! ${event.type}`);
+    if (navigator.onLine) {
+        checkDatabase();
+    }
 };
 
-// This function will be executed if we attempt to submit a new user and there's no internet connection
-function saveRecord(record) {
-    
-    const transaction = db.transaction(['new_user'], 'readwrite');
+request.onerror = event => console.error(event);
 
-    // access the object store for `new_user`
-    const userObjectStore = transaction.objectStore('new_user');
+function checkDatabase() {
 
-    // add record to your store with add method
-    userObjectStore.add(record);
-}
+    let transaction = db.transaction([pendingObjectStoreName], "readwrite");
 
-function uploadUser() {
-    // open a transaction on your db
-    const transaction = db.transaction(['new_user'], 'readwrite');
+    let store = transaction.objectStore(pendingObjectStoreName);
 
-    // access your object store
-    const userObjectStore = transaction.objectStore('new_user');
+    const getAll = store.getAll();
 
-    // get all records from store and set to a variable
-    const getAll = userObjectStore.getAll();
-
-    // upon a successful .getAll() execution, run this function
-    getAll.onsuccess = function () {
-        // if there was data in indexedDb's store, let's send it to the api server
+    getAll.onsuccess = () => {
         if (getAll.result.length > 0) {
-            fetch('/api/users', {
-                method: 'POST',
-                body: JSON.stringify(getAll.result),
-                headers: {
-                    Accept: 'application/json, text/plain, */*',
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => response.json())
-                .then(serverResponse => {
-                    if (serverResponse.message) {
-                        throw new Error(serverResponse);
+            fetch("/api/transaction/bulk", {
+                    method: "POST",
+                    body: JSON.stringify(getAll.result),
+                    headers: {
+                        Accept: "application/json, text/plain, */*",
+                        "Content-Type": "application/json"
                     }
-                    // open one more transaction
-                    const transaction = db.transaction(['new_user'], 'readwrite');
-                    // access the new_user object store
-                    const userObjectStore = transaction.objectStore('new_user');
-                    // clear all items in your store
-                    userObjectStore.clear();
-
-                    alert('All saved user has been submitted!');
                 })
-                .catch(err => {
-                    console.log(err);
+                .then(response => response.json())
+                .then(() => {
+                    // if successful, open a transaction on your pending db
+                    transaction = db.transaction([pendingObjectStoreName], "readwrite");
+
+                    // access your pending object store
+                    store = transaction.objectStore(pendingObjectStoreName);
+
+                    // clear all items in your store
+                    store.clear();
                 });
         }
     };
-
-    // listen for app coming back online
-    window.addEventListener('online', uploadUser);
-
-
 }
+
+// eslint-disable-next-line no-unused-vars
+function saveRecord(record) {
+    const db = request.result;
+
+    // create a transaction on the pending db with readwrite access
+    const transaction = db.transaction([pendingObjectStoreName], "readwrite");
+
+    // access your pending object store
+    const store = transaction.objectStore(pendingObjectStoreName);
+
+    // add record to your store with add method.
+    store.add(record);
+}
+
+// listen for app coming back online
+window.addEventListener("online", checkDatabase);

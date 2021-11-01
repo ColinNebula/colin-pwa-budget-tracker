@@ -9,6 +9,7 @@ const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/budget";
 const app = express();
 
 app.use(logger("dev"));
+
 app.use(compression());
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));

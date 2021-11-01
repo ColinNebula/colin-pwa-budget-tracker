@@ -1,7 +1,7 @@
-# colin-pwa-budget-tracker
+# Colin-pwa-budget-tracker
 
 ## Description
-
+Budget Tracker is an application which allows offline access and functionality to it's users. The user can add expenses or deposite even without a connection.
 ## Project URL
 
 ## Project Github Repository

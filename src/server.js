@@ -11,7 +11,7 @@ const app = express();
 app.use(logger("dev"));
 
 app.use(compression());
-app.use(express.static("public"));
+app.use(express.static("src/public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -25,5 +25,5 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/colin-pwd-budge
 app.use(require("./routes/api.js"));
 
 app.listen(PORT, () => {
-  console.log(`App running on port ${PORT}!`);
+  console.log(`App running on port ${PORT}!`); 
 });

@@ -7,8 +7,8 @@ request.onupgradeneeded = event => {
 
     console.log(event);
 
-    if (!db.objectStoreNames.contains(pendingObjectStoreName)) {
-        db.createObjectStore(pendingObjectStoreName, {
+    if (!db.objectStoreNames.contains('colin-pwa-budget-tracker')) {
+        db.createObjectStore('colin-pwa-budget-tracker', {
             autoIncrement: true
         });
     }

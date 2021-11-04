@@ -27,9 +27,9 @@ request.onerror = event => console.error(event);
 
 function checkDatabase() {
 
-    let transaction = db.transaction([pendingObjectStoreName], "readwrite");
+    let transaction = db.transaction(['colin-pwa-budget-tracker'], "readwrite");
 
-    let store = transaction.objectStore(pendingObjectStoreName);
+    let store = transaction.objectStore('colin-pwa-budget-tracker');
 
     const getAll = store.getAll();
 
